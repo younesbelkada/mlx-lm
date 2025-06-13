@@ -205,7 +205,6 @@ def load_model(
             bits=quantization["bits"],
             class_predicate=class_predicate,
         )
-
     # We can also handle HF-related quant models such as bitnet
     if config.get("quantization_config", None) is not None:
         quantization_config = config["quantization_config"]

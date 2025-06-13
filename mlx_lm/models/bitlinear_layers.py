@@ -84,11 +84,11 @@ class BitLinear(nn.Module):
 
         // Apply weight scaling by diving them or multiplying them
         if (fused_length > 0) {
-            // determine the index by checking the interval which weight_layer_idx belongs to
+            bool found = false;
             for (uint i = 0; i < fused_length; i++) {
-                if (out_idx < fused_shapes[i]) {
+                if (!found && (out_idx < fused_shapes[i])) {
                     weight_layer_idx = i;
-                    break;
+                    found = true;
                 }
             }
         }
@@ -124,9 +124,12 @@ class BitLinear(nn.Module):
 
         if self.fused_layers:
             self.fused_shapes.append(out_features)
+            
             inputs = [x_flattened.astype(self.dtype), packed_weights, self.weight_scale, self.invert_weight_scales,  mx.array(self.fused_shapes), len(self.fused_shapes)]
         else:
             inputs = [x_flattened.astype(self.dtype), packed_weights, self.weight_scale, self.invert_weight_scales, mx.array([]), 0]
+
+        import pdb; pdb.set_trace()
 
         outputs = self._compiled_kernel(
             inputs=inputs,
